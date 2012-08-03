@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'LanguageLock' target in the 'LanguageLock' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+    #import <Carbon/Carbon.h>
+#endif
