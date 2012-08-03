@@ -114,13 +114,13 @@
 
 - (IBAction)switchSubview:(id)sender
 {
-    int buttonTag = [sender tag];
+    NSInteger buttonTag = [sender tag];
     [self switchSubviewHelper:buttonTag];
     return;
 }
 
 #pragma mark - Utilities
-- (void)switchSubviewHelper:(int)tag
+- (void)switchSubviewHelper:(NSInteger)tag
 {
     NSView* selectedView = [self viewFromTag:tag];
     NSRect selectedFrame = [self calculateNewFrame:selectedView];
@@ -137,7 +137,7 @@
     [NSAnimationContext endGrouping];
 }
 
-- (NSView*)viewFromTag:(int)tag
+- (NSView*)viewFromTag:(NSInteger)tag
 {
     switch(tag)
     {
@@ -150,16 +150,16 @@
     }
 }
 
-- (NSString*)identifierFromTag:(int)tag
+- (NSString*)identifierFromTag:(NSInteger)tag
 {
     switch(tag)
     {
         case 0:
-            return [NSString stringWithString:@"General"];
+            return @"General";
         case 1:
-            return [NSString stringWithString:@"About"];
+            return @"About";
         default:
-            return [NSString stringWithString:@"General"];
+            return @"General";
     }
 }
 
