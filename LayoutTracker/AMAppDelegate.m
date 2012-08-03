@@ -121,7 +121,7 @@
     self.activeApp = app;
     [app release];
     
-    NSLog(@"%@", _applicationInputSourceMap);
+    //NSLog(@"%@", _applicationInputSourceMap);
     
     // See if we need to update the keyboard layout
     if(!_disabled) 
