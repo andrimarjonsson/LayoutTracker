@@ -12,6 +12,7 @@
 
 @synthesize path = _path;
 @synthesize localizedName = _localizedName;
+@synthesize bundleIdentifier = _bundleIdentifier;
 @synthesize icon = _icon;
 
 #pragma mark - Object lifecycle
@@ -20,8 +21,9 @@
     self = [super init];
     if(self)
     {
-        _path = [[NSString stringWithString:[[application executableURL] path]] retain];
-        _localizedName = [[NSString stringWithString:[application localizedName]] retain];
+        _path = [[[application executableURL] path] retain];
+        _localizedName = [[application localizedName] retain];
+        _bundleIdentifier = [[application bundleIdentifier] retain];
         _icon = [[application icon] copy];
         [_icon setSize:NSMakeSize(16.0f, 16.0f)];
     }
@@ -73,7 +75,7 @@
 #pragma mark - Other
 - (NSString*)description
 {
-    return [self localizedName];
+    return _bundleIdentifier;
 }
 
 #pragma mark - Equality and Comparison

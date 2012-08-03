@@ -18,6 +18,7 @@
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, readonly) NSString *localizedName;
 @property (nonatomic, readonly) NSImage *icon;
+@property (nonatomic, readonly) NSString *bundleIdentifier;
 
 - (id)initWithNSRunningApplication:(NSRunningApplication*)application;
 - (BOOL) isEqualToAppInfo:(AMAppInfo*)object;
