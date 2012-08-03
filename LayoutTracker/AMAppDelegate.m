@@ -208,7 +208,7 @@
 {
     if (!self.preferenceController) 
     {
-        self.preferenceController = [[AMPreferencesController alloc ] initWithInputSourceMap:_applicationInputSourceMap];
+        self.preferenceController = [[[AMPreferencesController alloc ] initWithInputSourceMap:_applicationInputSourceMap] autorelease];
     }
     
     // Force a reload of the table in the general section.
