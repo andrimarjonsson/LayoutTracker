@@ -8,6 +8,10 @@
 
 #import "AMAppInfo.h"
 
+NSString* const kPathKey = @"kPathKey";
+NSString* const kLocalizedNameKey = @"kLocalizedNameKey";
+NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
+
 @implementation AMAppInfo
 
 @synthesize path = _path;
@@ -21,7 +25,7 @@
     self = [super init];
     if(self)
     {
-        _path = [[[application executableURL] path] retain];
+        _path = [[[application bundleURL] path] retain];
         _localizedName = [[application localizedName] retain];
         _bundleIdentifier = [[application bundleIdentifier] retain];
         _icon = [[application icon] copy];
@@ -29,6 +33,8 @@
     }
     return self;
 }
+
+
 
 - (id)init
 {
@@ -45,6 +51,32 @@
                         }];
     return [self initWithNSRunningApplication:[runningApps objectAtIndex:index]];
 }
+
+- (id)initWithCoder:(NSCoder*)decoder
+{
+    if(self = [super init])
+    {
+        _path = [[decoder decodeObjectForKey:kPathKey] retain];
+        _localizedName = [[decoder decodeObjectForKey:kLocalizedNameKey] retain];
+        _bundleIdentifier = [[decoder decodeObjectForKey:kBundleIdentifierKey] retain];
+        
+        NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
+        _icon = [[workspace iconForFile:_path] copy];
+        [_icon setSize:NSMakeSize(16.0f, 16.0f)];
+        
+        return self;
+    }
+    
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder*)encoder
+{
+    [encoder encodeObject:_path forKey:kPathKey];
+    [encoder encodeObject:_localizedName forKey:kLocalizedNameKey];
+    [encoder encodeObject:_bundleIdentifier forKey:kBundleIdentifierKey];
+}
+
 
 - (void)dealloc
 {
@@ -73,10 +105,10 @@
 }
 
 #pragma mark - Other
-- (NSString*)description
-{
-    return _bundleIdentifier;
-}
+//- (NSString*)description
+//{
+//    return _bundleIdentifier;
+//}
 
 #pragma mark - Equality and Comparison
 - (BOOL)isEqual:(id)object

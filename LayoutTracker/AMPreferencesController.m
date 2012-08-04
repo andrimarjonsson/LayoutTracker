@@ -87,7 +87,10 @@
     
     if([[tableColumn identifier] isEqualToString:@"Layout"])
     {
-        AMInputSource *inputSource = [_applicationInputSourceMap objectForKey:[keys objectAtIndex:row]];
+        NSString *inputSourceID = [_applicationInputSourceMap objectForKey:[keys objectAtIndex:row]];
+        
+        AMInputSource *inputSource = [[AMInputSource alloc] initWithInputSourceID:inputSourceID];
+        
         NSTextAttachment* attachment = [[[NSTextAttachment alloc] init] autorelease];
         [(NSCell *) [attachment attachmentCell] setImage:[inputSource icon]];
         
@@ -95,6 +98,8 @@
         [[aString mutableString] appendFormat:@" %@", [inputSource localizedName]];
         // Adjust vertical alignment so that image and text are flush.
         [aString addAttribute:NSBaselineOffsetAttributeName  value:[NSNumber numberWithFloat: -2.5] range:NSMakeRange(0, 1)];
+        
+        [inputSource release];
         
         returnVal = aString;
     }

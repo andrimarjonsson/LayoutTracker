@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AMAppInfo : NSObject <NSCopying>
+@interface AMAppInfo : NSObject <NSCopying, NSCoding>
 {
     NSString *_path;
     NSString *_localizedName;
+    NSString *_bundleIdentifier;
     NSImage *_icon;
 }
 

@@ -14,6 +14,8 @@
 #import "AMPreferencesController.h"
 #import "AMAppInfo.h"
 
+NSString* const kInputSourceMapConfigKey = @"InputSourceMapConfigKey";
+
 @interface AMAppDelegate (PrivateMethods)
 - (void)activeAppDidChange:(NSNotification*)notitfication;
 - (void)systemSelectedInputSourceDidChange:(NSNotification*)notification;
@@ -40,10 +42,8 @@
     if (self) 
     {
         // Init the structures used
-        _applicationInputSourceMap = [[NSMutableDictionary alloc] init];
         _inputSources = [[NSMutableDictionary alloc] init];
-        // Get enabled layouts in the system
-        [self readInputSources];
+
         // Get the default one, I know init will do the same but I like to be explicit
         // in what I'm trying to achieve.
         _defaultInputSource = [[AMInputSource alloc] initWithTISInputSource:TISCopyCurrentKeyboardLayoutInputSource()];
@@ -83,6 +83,11 @@
                                                             name:(NSString*)kTISNotifyEnabledKeyboardInputSourcesChanged
                                                           object:nil 
                                               suspensionBehavior:NSNotificationSuspensionBehaviorDeliverImmediately];
+    
+    [self loadLayout];
+    
+    // Get enabled layouts in the system
+    [self readInputSources];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
@@ -126,11 +131,13 @@
     // See if we need to update the keyboard layout
     if(!_disabled) 
     {
-        //NSString* appName = [_activeApp localizedName];
-        AMInputSource* inputSource = [_applicationInputSourceMap objectForKey:_activeApp];
-        if(inputSource != nil) 
+        NSString *inputSourceID = [_applicationInputSourceMap objectForKey:_activeApp];
+        
+        if(inputSourceID != nil) 
         {
+            AMInputSource *inputSource = [[AMInputSource alloc] initWithInputSourceID:inputSourceID];
             TISSelectInputSource([inputSource inputSourceRef]);
+            [inputSource release];
         } 
         else 
         {
@@ -144,14 +151,43 @@
     if (!_disabled) 
     {
         AMInputSource *currentInputSource = [[AMInputSource alloc] initWithTISInputSource:TISCopyCurrentKeyboardLayoutInputSource()];
-        [_applicationInputSourceMap setObject:currentInputSource forKey:_activeApp];
+        [_applicationInputSourceMap setObject:[currentInputSource sourceID] forKey:_activeApp];
         [currentInputSource release];
+        
+        [self saveLayout];
     }
 }
 
 - (void)systemEnabledInputSourcesDidChange:(NSNotification*)notification
 {
     [self readInputSources];
+}
+
+- (void)saveLayout
+{
+    NSData *layout = [NSKeyedArchiver archivedDataWithRootObject:_applicationInputSourceMap];
+    
+    if(layout)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:layout forKey:kInputSourceMapConfigKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)loadLayout
+{
+    NSData *configData = [[NSUserDefaults standardUserDefaults] objectForKey:kInputSourceMapConfigKey];
+    
+    if(configData != nil)
+    {
+        NSDictionary *configDict = [NSKeyedUnarchiver unarchiveObjectWithData:configData];
+        
+        _applicationInputSourceMap = [[NSMutableDictionary alloc] initWithDictionary:configDict];
+    }
+    else
+    {
+        _applicationInputSourceMap = [[NSMutableDictionary alloc] init];
+    }
 }
 
 - (void)readInputSources
@@ -169,6 +205,7 @@
     
     
     CFArrayRef inputList = TISCreateInputSourceList(dict, false);
+    
     long inputListSize = CFArrayGetCount(inputList);
     
     for (int i = 0; i < inputListSize; ++i) 

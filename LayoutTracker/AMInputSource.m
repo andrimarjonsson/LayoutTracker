@@ -8,6 +8,8 @@
 
 #import "AMInputSource.h"
 
+static NSCache *inputSourceCache = nil;
+
 @interface AMInputSource (PrivateMethods) 
 - (void)baseInit;
 @end
@@ -34,12 +36,82 @@
     return self;
 }
 
-- (void) dealloc;
+- (TISInputSourceRef)inputSourceWithID:(NSString*)inputSourceID
+{
+    static dispatch_once_t pred;
+    
+    dispatch_once(&pred, ^{
+        inputSourceCache = [[NSCache alloc] init];
+    });
+    
+    TISInputSourceRef theInputSource = (TISInputSourceRef)[inputSourceCache objectForKey:inputSourceID];
+    
+    if(theInputSource == NULL)
+    {
+        //Fill the cache
+        
+        CFMutableDictionaryRef dict = CFDictionaryCreateMutable(NULL, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionaryAddValue(dict, kTISPropertyInputSourceCategory, kTISCategoryKeyboardInputSource);
+        CFDictionaryAddValue(dict, kTISPropertyInputSourceType, kTISTypeKeyboardLayout);
+        
+        CFArrayRef inputList = TISCreateInputSourceList(dict, false);
+        
+        NSUInteger count = CFArrayGetCount(inputList);
+        
+        for(NSUInteger i = 0; i < count; i++)
+        {
+            TISInputSourceRef inputSource = (TISInputSourceRef)CFArrayGetValueAtIndex(inputList, i);
+            
+            NSString *currentInputSourceID = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID);
+            
+            [inputSourceCache setObject:(id)inputSource forKey:currentInputSourceID];
+            
+            if([currentInputSourceID isEqualToString:inputSourceID])
+            {
+                theInputSource = inputSource;
+                break;
+            }
+        }
+        
+        CFRelease(inputList);
+    }    
+    
+    return theInputSource;
+}
+
+- (NSString*)sourceID
+{
+    if(_ref != NULL)
+        return TISGetInputSourceProperty(_ref, kTISPropertyInputSourceID);
+    
+    return nil;
+}
+
+- (id)initWithInputSourceID:(NSString*)inputSourceID
+{
+    if(self = [super init])
+    {
+        TISInputSourceRef inputSourceRef = [self inputSourceWithID:inputSourceID];
+        
+        if(inputSourceRef == NULL)
+            return nil;
+        
+        _ref = inputSourceRef;
+        CFRetain(_ref);
+        
+        return self;
+    }
+    
+    return nil;
+}
+
+- (void)dealloc;
 {
     if (_ref != NULL) 
     {
         CFRelease(_ref);
     }
+    
     [_localizedName release];
     [_icon release];
 
@@ -68,16 +140,6 @@
     _icon = [[NSImage alloc] initWithIconRef:iconRef];
     [_icon setSize:NSMakeSize(16.0, 16.0)];
     return _icon;
-}
-
-#pragma mark - NSCopying
-- (id)copyWithZone:(NSZone *)zone
-{
-    // This is so the object can be used with NSDictionaryController
-    // We do not want to really deep copy the object, simply add another
-    // retain on the handle.
-    CFRetain(_ref);
-    return [self retain];
 }
 
 #pragma mark - PrivateMethods
