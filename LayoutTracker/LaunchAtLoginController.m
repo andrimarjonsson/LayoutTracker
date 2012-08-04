@@ -45,11 +45,15 @@ void sharedFileListDidChange(LSSharedFileListRef inList, void *context)
 
 - (id) init
 {
-    [super init];
-    loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    LSSharedFileListAddObserver(loginItems, CFRunLoopGetMain(),
-        (CFStringRef)NSDefaultRunLoopMode, sharedFileListDidChange, self);
-    return self;
+    if(self = [super init])
+    {
+        loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+        LSSharedFileListAddObserver(loginItems, CFRunLoopGetMain(), (CFStringRef)NSDefaultRunLoopMode, sharedFileListDidChange, self);
+    
+        return self;
+    }
+    
+    return nil;
 }
 
 - (void) dealloc

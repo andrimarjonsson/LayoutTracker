@@ -87,7 +87,10 @@
     
     if([[tableColumn identifier] isEqualToString:@"Layout"])
     {
-        AMInputSource *inputSource = [_applicationInputSourceMap objectForKey:[keys objectAtIndex:row]];
+        NSString *inputSourceID = [_applicationInputSourceMap objectForKey:[keys objectAtIndex:row]];
+        
+        AMInputSource *inputSource = [[AMInputSource alloc] initWithInputSourceID:inputSourceID];
+        
         NSTextAttachment* attachment = [[[NSTextAttachment alloc] init] autorelease];
         [(NSCell *) [attachment attachmentCell] setImage:[inputSource icon]];
         
@@ -95,6 +98,8 @@
         [[aString mutableString] appendFormat:@" %@", [inputSource localizedName]];
         // Adjust vertical alignment so that image and text are flush.
         [aString addAttribute:NSBaselineOffsetAttributeName  value:[NSNumber numberWithFloat: -2.5] range:NSMakeRange(0, 1)];
+        
+        [inputSource release];
         
         returnVal = aString;
     }
@@ -114,13 +119,13 @@
 
 - (IBAction)switchSubview:(id)sender
 {
-    int buttonTag = [sender tag];
+    NSInteger buttonTag = [sender tag];
     [self switchSubviewHelper:buttonTag];
     return;
 }
 
 #pragma mark - Utilities
-- (void)switchSubviewHelper:(int)tag
+- (void)switchSubviewHelper:(NSInteger)tag
 {
     NSView* selectedView = [self viewFromTag:tag];
     NSRect selectedFrame = [self calculateNewFrame:selectedView];
@@ -137,7 +142,7 @@
     [NSAnimationContext endGrouping];
 }
 
-- (NSView*)viewFromTag:(int)tag
+- (NSView*)viewFromTag:(NSInteger)tag
 {
     switch(tag)
     {
@@ -150,16 +155,16 @@
     }
 }
 
-- (NSString*)identifierFromTag:(int)tag
+- (NSString*)identifierFromTag:(NSInteger)tag
 {
     switch(tag)
     {
         case 0:
-            return [NSString stringWithString:@"General"];
+            return @"General";
         case 1:
-            return [NSString stringWithString:@"About"];
+            return @"About";
         default:
-            return [NSString stringWithString:@"General"];
+            return @"General";
     }
 }
 
