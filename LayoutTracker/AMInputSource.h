@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AMInputSource : NSObject <NSCopying>
+@interface AMInputSource : NSObject
 {
     TISInputSourceRef _ref;
     NSImage *_icon;
@@ -21,5 +21,7 @@
 
 - (id)init;
 - (id)initWithTISInputSource:(TISInputSourceRef)source;
-- (void) dealloc;
+- (id)initWithInputSourceID:(NSString*)inputSourceID;
+- (NSString*)sourceID;
+
 @end
