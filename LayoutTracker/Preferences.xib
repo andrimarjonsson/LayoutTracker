@@ -191,7 +191,7 @@
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -263,7 +263,7 @@
 											<string key="NSReuseIdentifierKey">_NS:1830</string>
 											<reference key="NSTableView" ref="102600017"/>
 										</object>
-										<object class="_NSCornerView" key="NSCornerView" id="220553469">
+										<object class="_NSCornerView" key="NSCornerView" id="993539544">
 											<reference key="NSNextResponder" ref="928836520"/>
 											<int key="NSvFlags">-2147483392</int>
 											<string key="NSFrame">{{224, 0}, {16, 17}}</string>
@@ -442,7 +442,7 @@
 								<reference key="NSBGColor" ref="454030494"/>
 								<int key="NScvFlags">4</int>
 							</object>
-							<reference ref="220553469"/>
+							<reference ref="993539544"/>
 						</array>
 						<string key="NSFrame">{{20, 46}, {449, 226}}</string>
 						<reference key="NSSuperview" ref="760954705"/>
@@ -454,7 +454,7 @@
 						<reference key="NSHScroller" ref="502204748"/>
 						<reference key="NSContentView" ref="386406931"/>
 						<reference key="NSHeaderClipView" ref="707605644"/>
-						<reference key="NSCornerView" ref="220553469"/>
+						<reference key="NSCornerView" ref="993539544"/>
 						<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 						<double key="NSMinMagnification">0.25</double>
 						<double key="NSMaxMagnification">4</double>

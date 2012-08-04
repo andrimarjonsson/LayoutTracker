@@ -67,10 +67,7 @@ static NSCache *inputSourceCache = nil;
             [inputSourceCache setObject:(id)inputSource forKey:currentInputSourceID];
             
             if([currentInputSourceID isEqualToString:inputSourceID])
-            {
                 theInputSource = inputSource;
-                break;
-            }
         }
         
         CFRelease(inputList);
