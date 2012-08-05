@@ -13,7 +13,6 @@ It monitors application switches and checks if it has a specific keyboard assign
 By all means! Please clone, modify and issue pull requests. This is my first "official" OSX application and all feedback is much appreciated!
 
 ##TODO
-* Persist the mappings.
 * Make your own mappings from the preference screen.
 
 ##Installation
