@@ -13,7 +13,7 @@
     NSTableView *_tableView;
     NSButton *_startOnLogin;
     NSMutableDictionary *_applicationInputSourceMap;
-    int _currentViewTag;
+    NSInteger _currentViewTag;
 
     IBOutlet NSToolbar* toolBar;
     IBOutlet NSView* generalView;
@@ -24,7 +24,7 @@
 
 @property (assign) IBOutlet NSTableView *tableView;
 @property (assign) IBOutlet NSButton *startOnLogin;
-@property (assign) int currentViewTag;
+@property (assign) NSInteger currentViewTag;
 
 - (IBAction)toggleStartOnLogin:(id)sender;
 - (IBAction)switchSubview:(id)sender;

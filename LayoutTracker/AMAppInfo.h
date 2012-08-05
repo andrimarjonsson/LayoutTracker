@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AMAppInfo : NSObject <NSCopying>
+@interface AMAppInfo : NSObject <NSCopying, NSCoding>
 {
     NSString *_path;
     NSString *_localizedName;
+    NSString *_bundleIdentifier;
     NSImage *_icon;
 }
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, readonly) NSString *localizedName;
 @property (nonatomic, readonly) NSImage *icon;
+@property (nonatomic, readonly) NSString *bundleIdentifier;
 
 - (id)initWithNSRunningApplication:(NSRunningApplication*)application;
 - (BOOL) isEqualToAppInfo:(AMAppInfo*)object;
