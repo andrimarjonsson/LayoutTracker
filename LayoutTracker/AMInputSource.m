@@ -12,6 +12,7 @@ static NSCache *inputSourceCache = nil;
 
 @interface AMInputSource (PrivateMethods) 
 - (void)baseInit;
+- (TISInputSourceRef)inputSourceWithID:(NSString*)inputSourceID;
 @end
 
 @implementation AMInputSource
@@ -28,60 +29,12 @@ static NSCache *inputSourceCache = nil;
 - (id)initWithTISInputSource:(TISInputSourceRef)source
 {
     self = [super init];
-    if (self) {
+    if (self) 
+    {
         _ref = source;
         CFRetain(_ref);
-        
     }
     return self;
-}
-
-- (TISInputSourceRef)inputSourceWithID:(NSString*)inputSourceID
-{
-    static dispatch_once_t pred;
-    
-    dispatch_once(&pred, ^{
-        inputSourceCache = [[NSCache alloc] init];
-    });
-    
-    TISInputSourceRef theInputSource = (TISInputSourceRef)[inputSourceCache objectForKey:inputSourceID];
-    
-    if(theInputSource == NULL)
-    {
-        //Fill the cache
-        
-        CFMutableDictionaryRef dict = CFDictionaryCreateMutable(NULL, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-        CFDictionaryAddValue(dict, kTISPropertyInputSourceCategory, kTISCategoryKeyboardInputSource);
-        CFDictionaryAddValue(dict, kTISPropertyInputSourceType, kTISTypeKeyboardLayout);
-        
-        CFArrayRef inputList = TISCreateInputSourceList(dict, false);
-        
-        NSUInteger count = CFArrayGetCount(inputList);
-        
-        for(NSUInteger i = 0; i < count; i++)
-        {
-            TISInputSourceRef inputSource = (TISInputSourceRef)CFArrayGetValueAtIndex(inputList, i);
-            
-            NSString *currentInputSourceID = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID);
-            
-            [inputSourceCache setObject:(id)inputSource forKey:currentInputSourceID];
-            
-            if([currentInputSourceID isEqualToString:inputSourceID])
-                theInputSource = inputSource;
-        }
-        
-        CFRelease(inputList);
-    }    
-    
-    return theInputSource;
-}
-
-- (NSString*)sourceID
-{
-    if(_ref != NULL)
-        return TISGetInputSourceProperty(_ref, kTISPropertyInputSourceID);
-    
-    return nil;
 }
 
 - (id)initWithInputSourceID:(NSString*)inputSourceID
@@ -91,7 +44,9 @@ static NSCache *inputSourceCache = nil;
         TISInputSourceRef inputSourceRef = [self inputSourceWithID:inputSourceID];
         
         if(inputSourceRef == NULL)
+        {
             return nil;
+        }
         
         _ref = inputSourceRef;
         CFRetain(_ref);
@@ -139,6 +94,16 @@ static NSCache *inputSourceCache = nil;
     return _icon;
 }
 
+- (NSString*)sourceID
+{
+    if(_ref != NULL)
+    {
+        return (NSString*)((CFStringRef)TISGetInputSourceProperty(_ref, kTISPropertyInputSourceID));
+    }
+    
+    return nil;
+}
+
 #pragma mark - PrivateMethods
 - (void)baseInit
 {
@@ -152,6 +117,46 @@ static NSCache *inputSourceCache = nil;
             // Add to app list.
         }
     }
+}
+
+- (TISInputSourceRef)inputSourceWithID:(NSString*)inputSourceID
+{
+    static dispatch_once_t pred;
+    
+    dispatch_once(&pred, ^{
+        inputSourceCache = [[NSCache alloc] init];
+    });
+    
+    TISInputSourceRef theInputSource = (TISInputSourceRef)[inputSourceCache objectForKey:inputSourceID];
+    
+    if(theInputSource == NULL)
+    {
+        //Fill the cache
+        
+        CFMutableDictionaryRef dict = CFDictionaryCreateMutable(NULL, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionaryAddValue(dict, kTISPropertyInputSourceCategory, kTISCategoryKeyboardInputSource);
+        CFDictionaryAddValue(dict, kTISPropertyInputSourceType, kTISTypeKeyboardLayout);
+        
+        CFArrayRef inputList = TISCreateInputSourceList(dict, false);
+        
+        NSUInteger count = CFArrayGetCount(inputList);
+        
+        for(NSUInteger i = 0; i < count; i++)
+        {
+            TISInputSourceRef inputSource = (TISInputSourceRef)CFArrayGetValueAtIndex(inputList, i);
+            
+            NSString *currentInputSourceID = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID);
+            
+            [inputSourceCache setObject:(id)inputSource forKey:currentInputSourceID];
+            
+            if([currentInputSourceID isEqualToString:inputSourceID])
+                theInputSource = inputSource;
+        }
+        
+        CFRelease(inputList);
+    }    
+    
+    return theInputSource;
 }
 
 #pragma mark - ToString

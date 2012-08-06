@@ -34,8 +34,6 @@ NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
     return self;
 }
 
-
-
 - (id)init
 {
     // Search for the currently active application
@@ -60,6 +58,8 @@ NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
     [_icon release];
     [super dealloc];
 }
+
+#pragma mark - NSCoding
 
 - (id)initWithCoder:(NSCoder*)decoder
 {
@@ -86,26 +86,6 @@ NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
     [encoder encodeObject:_bundleIdentifier forKey:kBundleIdentifierKey];
 }
 
-
-- (void)dealloc
-{
-    [_path release];
-    [_localizedName release];
-    [_icon release];
-    [super dealloc];
-}
-
-#pragma mark - Accessors
-- (NSString *)localizedName
-{
-    return _localizedName;
-}
-
-- (NSImage *)icon
-{
-    return _icon;
-}
-
 #pragma mark - NSCopying
 - (id)copyWithZone:(NSZone *)zone
 {
@@ -114,10 +94,10 @@ NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
 }
 
 #pragma mark - Other
-//- (NSString*)description
-//{
-//    return _bundleIdentifier;
-//}
+- (NSString*)description
+{
+    return _bundleIdentifier;
+}
 
 #pragma mark - Equality and Comparison
 - (BOOL)isEqual:(id)object

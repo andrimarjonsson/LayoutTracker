@@ -20,6 +20,8 @@ NSString* const kInputSourceMapConfigKey = @"InputSourceMapConfigKey";
 - (void)activeAppDidChange:(NSNotification*)notitfication;
 - (void)systemSelectedInputSourceDidChange:(NSNotification*)notification;
 - (void)systemEnabledInputSourcesDidChange:(NSNotification*)notification;
+- (void)saveLayout;
+- (void)loadLayout;
 - (void)readInputSources;
 @end
 
@@ -124,8 +126,6 @@ NSString* const kInputSourceMapConfigKey = @"InputSourceMapConfigKey";
     AMAppInfo *app = [[AMAppInfo alloc] initWithNSRunningApplication:[[notification userInfo] objectForKey:NSWorkspaceApplicationKey]];
     self.activeApp = app;
     [app release];
-    
-    //NSLog(@"%@", _applicationInputSourceMap);
     
     // See if we need to update the keyboard layout
     if(!_disabled) 
@@ -254,6 +254,7 @@ NSString* const kInputSourceMapConfigKey = @"InputSourceMapConfigKey";
     // succeeds.
     [self.preferenceController.tableView reloadData];
 }
+
 - (void)forcePrefControllerOnTop
 {
     [NSApp activateIgnoringOtherApps:YES];

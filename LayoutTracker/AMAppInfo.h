@@ -21,7 +21,8 @@
 @property (nonatomic, readonly) NSImage *icon;
 @property (nonatomic, readonly) NSString *bundleIdentifier;
 
+- (id)init;
 - (id)initWithNSRunningApplication:(NSRunningApplication*)application;
-- (BOOL) isEqualToAppInfo:(AMAppInfo*)object;
+- (BOOL)isEqualToAppInfo:(AMAppInfo*)object;
 
 @end

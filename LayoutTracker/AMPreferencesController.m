@@ -11,6 +11,14 @@
 #import "AMInputSource.h"
 #import "AMAppInfo.h"
 
+@interface AMPreferencesController(Helpers)
+- (NSMutableAttributedString*)fillCell:(id)data;
+- (void)switchSubviewHelper:(NSInteger)tag;
+- (NSView*)viewFromTag:(NSInteger)tag;
+- (NSString*)identifierFromTag:(NSInteger)tag;
+- (NSRect)calculateNewFrame:(NSView*)toView;
+@end
+
 @implementation AMPreferencesController
 
 @synthesize tableView = _tableView;
@@ -71,18 +79,9 @@
     
     if([[tableColumn identifier] isEqualToString:@"Application"])
     {
-        //returnVal = [keys objectAtIndex:row];
         AMAppInfo* appInfo = [keys objectAtIndex:row];
         
-        NSTextAttachment* attachment = [[[NSTextAttachment alloc] init] autorelease];
-        [(NSCell *) [attachment attachmentCell] setImage:[appInfo icon]];
-        
-        NSMutableAttributedString *aString = [[[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy] autorelease];
-        [[aString mutableString] appendFormat:@" %@", [appInfo localizedName]];
-        // Adjust vertical alignment so that image and text are flush.
-        [aString addAttribute:NSBaselineOffsetAttributeName  value:[NSNumber numberWithFloat: -2.5] range:NSMakeRange(0, 1)];
-        
-        returnVal = aString;
+        returnVal = [self fillCell:appInfo];
     }
     
     if([[tableColumn identifier] isEqualToString:@"Layout"])
@@ -91,17 +90,9 @@
         
         AMInputSource *inputSource = [[AMInputSource alloc] initWithInputSourceID:inputSourceID];
         
-        NSTextAttachment* attachment = [[[NSTextAttachment alloc] init] autorelease];
-        [(NSCell *) [attachment attachmentCell] setImage:[inputSource icon]];
-        
-        NSMutableAttributedString *aString = [[[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy] autorelease];
-        [[aString mutableString] appendFormat:@" %@", [inputSource localizedName]];
-        // Adjust vertical alignment so that image and text are flush.
-        [aString addAttribute:NSBaselineOffsetAttributeName  value:[NSNumber numberWithFloat: -2.5] range:NSMakeRange(0, 1)];
+        returnVal = [self fillCell:inputSource];
         
         [inputSource release];
-        
-        returnVal = aString;
     }
     
     return returnVal;
@@ -124,7 +115,21 @@
     return;
 }
 
-#pragma mark - Utilities
+#pragma mark - Helpers
+
+- (NSMutableAttributedString*)fillCell:(id)data
+{
+    NSTextAttachment* attachment = [[[NSTextAttachment alloc] init] autorelease];
+    [(NSCell *) [attachment attachmentCell] setImage:[data icon]];
+    
+    NSMutableAttributedString *aString = [[[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy] autorelease];
+    [[aString mutableString] appendFormat:@" %@", [data localizedName]];
+    // Adjust vertical alignment so that image and text are flush.
+    [aString addAttribute:NSBaselineOffsetAttributeName  value:[NSNumber numberWithFloat: -2.5] range:NSMakeRange(0, 1)];
+    
+    return aString;
+}
+
 - (void)switchSubviewHelper:(NSInteger)tag
 {
     NSView* selectedView = [self viewFromTag:tag];
