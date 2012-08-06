@@ -60,7 +60,6 @@ NSString* const kInputSourceMapConfigKey = @"InputSourceMapConfigKey";
     [_statusItem release];
     [_menuIcon release];
     [_altMenuIcon release];
-    [_preferenceController release];
     [_activeApp release];
     [super dealloc];
 }

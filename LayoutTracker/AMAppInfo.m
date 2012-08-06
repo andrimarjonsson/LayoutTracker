@@ -52,6 +52,15 @@ NSString* const kBundleIdentifierKey = @"kBundleIdentifierKey";
     return [self initWithNSRunningApplication:[runningApps objectAtIndex:index]];
 }
 
+- (void)dealloc
+{
+    [_path release];
+    [_localizedName release];
+    [_bundleIdentifier release];
+    [_icon release];
+    [super dealloc];
+}
+
 - (id)initWithCoder:(NSCoder*)decoder
 {
     if(self = [super init])
