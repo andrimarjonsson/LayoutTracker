@@ -1,7 +1,7 @@
 #LayoutTracker
 
 ##Introduction
-I'm a non native english speaker that uses a U.S. keyboard layout for programming because of the convinient placement of many keys used frequently when programming.
+I'm a non native english speaker that uses a U.S. keyboard layout for programming because of the convinient placement of many keys used frequently in many programming languages.
 
 I was very frustrated that I couldn't map a keyobard layout to an applications in OSX so I wrote this small application.
 
