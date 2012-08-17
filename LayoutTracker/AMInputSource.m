@@ -152,7 +152,8 @@ static NSCache *inputSourceCache = nil;
             if([currentInputSourceID isEqualToString:inputSourceID])
                 theInputSource = inputSource;
         }
-        
+
+        CFRelease(dict);
         CFRelease(inputList);
     }    
     
